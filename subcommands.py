@@ -50,15 +50,14 @@ def get_user():
     return {"username": username, "token": token}
 
 
-def _get_data(req, user):
+def _get_data(req):
     """ Wrapper around response from server
 
     checks data and raises a DBSRequestException with nice error message.
     Otherwise return json object.
     """
     if req.status_code == 404:
-        raise dbs_exceptions.DBSCliRequestException(
-                    "User {0} is unknown.\n".format(user["username"]))
+        raise dbs_exceptions.DBSCliRequestException("We got 404...\n")
     try:
         output = json.loads(req.text)
     except ValueError:
@@ -88,18 +87,18 @@ def _default_post(url, data=None, args=None, user=None):
         data=json.dumps(args)
 
     # debugging output
-    print ("Posting data: {0}".format({'url':URL,'auth':(user["username"], user["token"]),'data':data}))
+    print ("Posting data: {0}".format({'url':URL,'data':data}))
 
     try:
         req = requests.post(URL,
-                            auth=(user["username"], user["token"]),
+        #TODO:                    auth=(user["username"], user["token"]),
                             data=data)
     except requests.exceptions.ConnectionError:
         raise dbs_exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
     #except:
     #    raise dbs_exceptions.DBSCliRequestException("Error when sending POST request to {0}.".format(URL))
 
-    output = _get_data(req, user)
+    output = _get_data(req)
     if output is not None:
         # TODO: should not we use some wrapper around message like [retcode=1, message=...]?
         # then it would be:
@@ -109,7 +108,8 @@ def _default_post(url, data=None, args=None, user=None):
 
 def _default_get(url, user=None):
     server=None
-    if args and 'server' in args:
+    if args:
+       if 'server' in args:
         server=args.pop('server')
 
     server_api_url = get_api_url(server)
@@ -119,17 +119,17 @@ def _default_get(url, user=None):
         user = get_user()
 
     # debugging output
-    print ("Getting data: {0}".format({'url':URL,'auth':(user["username"], user["token"]),'data':data}))
+    print ("Getting data: {0}".format({'url':URL,'data':data}))
 
     try:
-        req = requests.get(URL,
-                           auth=(user["username"], user["token"]))
+        req = requests.get(URL)
+    #TODO:                       ,auth=(user["username"], user["token"]))
     except requests.exceptions.ConnectionError:
         raise dbs_exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
     #except:
     #    raise dbs_exceptions.DBSCliRequestException("Error when sending GET request to {0}.".format(URL))
 
-    output = _get_data(req, user)
+    output = _get_data(req)
     if output is not None:
         # TODO: should not we use some wrapper around message like [retcode=1, message=...]?
         # then it would be:
@@ -139,20 +139,21 @@ def _default_get(url, user=None):
 
 def action_new(data=None, args=None, user=None):
     """ Submit a new build. Specify either data or args. """
-    return _default_post('{0}/image/new/', data, args, user)
+    return _default_post('{0}/image/new', data, args, user)
 
 def action_move(data=None, args=None, user=None):
     """ Move image from one registry to another. Specify either data or args. """
     image=args.pop('image')
-    print(image)
     return _default_post('{{0}}/image/move/{0}'.format(image), data, args, user)
 
 def action_rebuild(data=None, args=None, user=None):
     """ Rebuild already built image. Specify either data or args. """
-    return _default_post('{0}/image/rebuild/', data, args, user)
+    image=args.pop('image')
+    return _default_post('{0}/image/rebuild/{0}'.format(image), data, args, user)
 
 def action_invalidate(data=None, args=None, user=None):
     """ Invalidate all deps of image specified by ID. Specify either data or args. """
-    return _default_post('{0}/image/invalidate/', data, args, user)
+    image=args.pop('image')
+    return _default_post('{0}/image/invalidatechilds/{0}'.format(image), data, args, user)
 
 

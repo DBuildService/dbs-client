@@ -11,42 +11,53 @@ Client for lightweight communication with DBS server.
 """
 
 def _get_copied(args):
-    s=['server', 'port', 'user']
-    s.extend(args)
+    s={'server':'server'}
+    s.update(args)
     return s
 
 
 def _get_specified(args, fields):
     d=vars(args)
-    return dict((key, d[key]) for key in _get_copied(fields))
+    return dict((nameout, d[namein]) for nameout, namein in _get_copied(fields).iteritems() if d[namein] is not None)
 
 
 # sub-command functions
 def action_new(args):
     if args.file:
         return subcommands.action_new(data=args.file.read())
-    payload = _get_specified(args, ['git', 'git_path', 'git_commit', 'parent', 'target', 'repo', 'tag'])
+    payload = _get_specified(args, {'git_url':'git_url',
+                                    'git_dockerfile_path':'git_dockerfile_path',
+                                    'git_commit':'git_commit',
+                                    'parent_registry':'parent_registry',
+                                    'target_registries':'target_registries',
+                                    'repos':'repos',
+                                    'tag':'tag'})
     return subcommands.action_new(args=payload)
 
 
 def action_move(args):
     if args.file:
         return subcommands.action_move(data=args.file.read())
-    payload = _get_specified(args, ['source', 'target', 'tag', 'image'])
+    payload = _get_specified(args, {'source_registry':'source_registry',
+                                    'target_registry':'target_registry',
+                                    'tags':'tags',
+                                    'image':'image'})
     return subcommands.action_move(args=payload)
 
 
 def action_invalidate(args):
     if args.file:
         return subcommands.action_invalidate(data=args.file.read())
-    payload = _get_specified(args, ['target', 'image'])
+    payload = _get_specified(args, {'target_registries':'target_registries',
+                                    'image':'image'})
     return subcommands.action_invalidate(args=payload)
 
 
 def action_rebuild(args):
     if args.file:
         return subcommands.action_rebuild(data=args.file.read())
-    payload = _get_specified(args, ['target', 'image'])
+    payload = _get_specified(args, {'target_registries':'target_registries',
+                                    'image':'image'})
     return subcommands.action_rebuild(args=payload)
 
 
@@ -90,30 +101,30 @@ def main():
 
     # create the parser for the "new" command
     parser_new = subparsers.add_parser('new', help='Submit a new task')
-    parser_new.add_argument('-g', '--git', metavar='url', required=True,
+    parser_new.add_argument('-g', '--git-url', metavar='url', required=True,
                        help='URL to git repository, excluding path')
-    parser_new.add_argument('--git-path', metavar='path', required=True,
+    parser_new.add_argument('--git-dockerfile-path', metavar='path', required=True,
                        help='Path in the git repository')
     parser_new.add_argument('--git-commit', metavar='path', default='HEAD',
                        help='Commit in the git repository')
-    parser_new.add_argument('-p', '--parent', metavar='url',
+    parser_new.add_argument('-p', '--parent-registry', metavar='url',
                        help='URL to registry server where parent image is pulled from')
-    parser_new.add_argument('-e', '--target', metavar='url',
+    parser_new.add_argument('-e', '--target-registries', metavar='url', nargs='*',
                        help='URL to registry server where built image is pushed to')
-    parser_new.add_argument('-r', '--repo', metavar='url', nargs='*',
+    parser_new.add_argument('-r', '--repos', metavar='url', nargs='*',
                        help='URL to Yum repository where to pull packages from '
                        + 'during build, but should not be available in the image')
-    parser_new.add_argument('-t', '--tag', metavar='tag', nargs='*',
+    parser_new.add_argument('-t', '--tag', metavar='tag',
                        help='Tag that should be used to label built image with')
     parser_new.set_defaults(func=action_new)
 
     # create the parser for the "move" command
     parser_move = subparsers.add_parser('move', help='Move some image from one registry to another registry')
-    parser_move.add_argument('-s', '--source', metavar='url', required=True,
+    parser_move.add_argument('-s', '--source-registry', metavar='url', required=True,
                        help='URL to registry server where moving image is pulled from')
-    parser_move.add_argument('-e', '--target', metavar='url', required=True,
+    parser_move.add_argument('-e', '--target-registry', metavar='url', required=True,
                        help='URL to registry server where built image is pushed to')
-    parser_move.add_argument('-t', '--tag', metavar='tag', nargs='*',
+    parser_move.add_argument('-t', '--tags', metavar='tag', required=True, nargs='*',
                        help='Tag that should be used to label built image with')
     parser_move.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image that should be moved')
@@ -121,7 +132,7 @@ def main():
 
     # create the parser for the "rebuild" command
     parser_rebuild = subparsers.add_parser('rebuild', help='Rebuild already built image')
-    parser_rebuild.add_argument('-e', '--target', metavar='url',
+    parser_rebuild.add_argument('-e', '--target-registries', metavar='url', nargs='*',
                        help='URL to registry server where the built image should be pushed to')
     parser_rebuild.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image that should be rebuilded')
@@ -129,7 +140,7 @@ def main():
 
     # create the parser for the "invalidate" command
     parser_inv = subparsers.add_parser('invalidate', help='Invalidate all images built from specified image')
-    parser_inv.add_argument('-e', '--target', metavar='url',
+    parser_inv.add_argument('-e', '--target-registries', metavar='url', nargs='*',
                        help='URL to registry server where we want to invalidate childs')
     parser_inv.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image whose childs should be invalidated')

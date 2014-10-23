@@ -61,6 +61,48 @@ def action_rebuild(args):
     return subcommands.action_rebuild(args=payload)
 
 
+def action_tasks(args):
+    if args.file:
+        return subcommands.action_tasks(data=args.file.read())
+    payload = _get_specified(args, {})
+    return subcommands.action_tasks(args=payload)
+
+
+def action_taskstatus(args):
+    if args.file:
+        return subcommands.action_taskstatus(data=args.file.read())
+    payload = _get_specified(args, {'task':'task'})
+    return subcommands.action_taskstatus(args=payload)
+
+
+def action_images(args):
+    if args.file:
+        return subcommands.action_images(data=args.file.read())
+    payload = _get_specified(args, {})
+    return subcommands.action_images(args=payload)
+
+
+def action_imageinfo(args):
+    if args.file:
+        return subcommands.action_imageinfo(data=args.file.read())
+    payload = _get_specified(args, {'image':'image'})
+    return subcommands.action_imageinfo(args=payload)
+
+
+def action_imagestatus(args):
+    if args.file:
+        return subcommands.action_imagestatus(data=args.file.read())
+    payload = _get_specified(args, {'image':'image'})
+    return subcommands.action_imagestatus(args=payload)
+
+
+def action_imagedeps(args):
+    if args.file:
+        return subcommands.action_imagedeps(data=args.file.read())
+    payload = _get_specified(args, {'image':'image'})
+    return subcommands.action_imagedeps(args=payload)
+
+
 def main():
     # create the top-level parser
     parser = argparse.ArgumentParser(description='Client for lightweight communication with DBS server.',
@@ -80,24 +122,35 @@ def main():
 
     # create the parser for the "taskstatus" command
     parser_tasks = subparsers.add_parser('tasks', help='Show all tasks')
+    parser_tasks.set_defaults(func=action_tasks)
 
     # create the parser for the "taskstatus" command
     parser_taskstatus = subparsers.add_parser('taskstatus', help='Show status of the task')
     parser_taskstatus.add_argument('-t', '--task', metavar='id', required=True,
                        help='ID of the task we want status for')
+    parser_taskstatus.set_defaults(func=action_taskstatus)
 
     # create the parser for the "images" command
     parser_images = subparsers.add_parser('images', help='Show all images')
+    parser_images.set_defaults(func=action_images)
 
     # create the parser for the "imageinfo" command
     parser_imageinfo = subparsers.add_parser('imageinfo', help='Show information about specified image')
     parser_imageinfo.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image we want information for')
+    parser_imageinfo.set_defaults(func=action_imageinfo)
+
+    # create the parser for the "imagestatus" command
+    parser_imagestatus = subparsers.add_parser('imagestatus', help='Show status information about specified image')
+    parser_imagestatus.add_argument('-i', '--image', metavar='id', required=True,
+                       help='ID of the image we want information for')
+    parser_imagestatus.set_defaults(func=action_imagestatus)
 
     # create the parser for the "imagedeps" command
     parser_imagedeps = subparsers.add_parser('imagedeps', help='Show deps of specified image')
     parser_imagedeps.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image we ask for dependencies')
+    parser_imagedeps.set_defaults(func=action_imagedeps)
 
     # create the parser for the "new" command
     parser_new = subparsers.add_parser('new', help='Submit a new task')

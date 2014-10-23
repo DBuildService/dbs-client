@@ -106,7 +106,7 @@ def _default_post(url, data=None, args=None, user=None):
         print(output)
 
 
-def _default_get(url, user=None):
+def _default_get(url, data=None, args=None, user=None):
     server=None
     if args:
        if 'server' in args:
@@ -141,19 +141,55 @@ def action_new(data=None, args=None, user=None):
     """ Submit a new build. Specify either data or args. """
     return _default_post('{0}/image/new', data, args, user)
 
+
 def action_move(data=None, args=None, user=None):
     """ Move image from one registry to another. Specify either data or args. """
     image=args.pop('image')
     return _default_post('{{0}}/image/move/{0}'.format(image), data, args, user)
 
+
 def action_rebuild(data=None, args=None, user=None):
     """ Rebuild already built image. Specify either data or args. """
     image=args.pop('image')
-    return _default_post('{0}/image/rebuild/{0}'.format(image), data, args, user)
+    return _default_post('{{0}}/image/rebuild/{0}'.format(image), data, args, user)
+
 
 def action_invalidate(data=None, args=None, user=None):
     """ Invalidate all deps of image specified by ID. Specify either data or args. """
     image=args.pop('image')
-    return _default_post('{0}/image/invalidatechilds/{0}'.format(image), data, args, user)
+    return _default_post('{{0}}/image/invalidatechilds/{0}'.format(image), data, args, user)
 
+
+def action_tasks(data=None, args=None, user=None):
+    """ Show all tasks. """
+    return _default_get('{0}/tasks', data, args, user)
+
+
+def action_taskstatus(data=None, args=None, user=None):
+    """ Show tasks status. """
+    task=args.pop('task')
+    return _default_get('{{0}}/taskstatus/{0}'.format(task), data, args, user)
+
+
+def action_images(data=None, args=None, user=None):
+    """ Show all images """
+    return _default_get('{0}/images', data, args, user)
+
+
+def action_imageinfo(data=None, args=None, user=None):
+    """ Show image info """
+    image=args.pop('image')
+    return _default_get('{{0}}/image/{0}/info'.format(image), data, args, user)
+
+
+def action_imagestatus(data=None, args=None, user=None):
+    """ Show image info """
+    image=args.pop('image')
+    return _default_get('{{0}}/image/{0}/status'.format(image), data, args, user)
+
+
+def action_imagedeps(data=None, args=None, user=None):
+    """ Show image deps """
+    image=args.pop('image')
+    return _default_get('{{0}}/image/{0}/deps'.format(image), data, args, user)
 

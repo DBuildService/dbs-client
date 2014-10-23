@@ -14,22 +14,36 @@ from dbs_defaults import *
 
 
 
-def get_api_url(server=None):
+def get_api_url(server=None, port=None):
     """ Retrieve the user information from the config file. """
-    if not server:
-        server = BUILD_SERVER_URL_DEFAULT
     config = ConfigParser.ConfigParser()
     config.read(
         os.path.join(os.path.expanduser("~"), ".config", CONFIG_FILE_NAME)
     )
 
-    # Default BUILD_SERVER_URL_DEFAULT or configured server_url:
-    server_url = "http://{0}".format(server)
-    if (config.has_section("client") and
-            config.has_option("client", "server_url")):
+    if config.has_section("client"):
+        # Default BUILD_SERVER_URL_DEFAULT or configured server_url:
+        if not server and config.has_option("client", "server_url"):
+            server = config.get("client", "server_url")
 
-        server_url = config.get("client", "server_url")
-    return "{0}/v{1}".format(server_url, DBS_API_VERSION)
+        # Default BUILD_SERVER_URL_DEFAULT or configured server_url:
+        if not port and config.has_option("client", "port"):
+            port = config.get("client", "port")
+
+    if not server:
+        server = BUILD_SERVER_URL_DEFAULT
+
+    if not port:
+        port = BUILD_SERVER_PORT_DEFAULT
+
+    if server[0:4] != 'http':
+        server = "http://{0}".format(server)
+
+    port_suf = ''
+    if port != 80:
+        port_suf = ":{0}".format(port)
+
+    return "{0}{1}/v{2}".format(server, port_suf, DBS_API_VERSION)
 
 
 def get_user():
@@ -74,10 +88,14 @@ def _get_data(req):
 
 def _default_post(url, data=None, args=None, user=None):
     server=None
-    if args and 'server' in args:
-        server=args.pop('server')
+    port=None
+    if args:
+       if 'server' in args:
+           server=args.pop('server')
+       if 'port' in args:
+           port=args.pop('port')
 
-    server_api_url = get_api_url(server)
+    server_api_url = get_api_url(server, port)
     URL = url.format(server_api_url)
 
     if not user:
@@ -108,11 +126,14 @@ def _default_post(url, data=None, args=None, user=None):
 
 def _default_get(url, data=None, args=None, user=None):
     server=None
+    port=None
     if args:
        if 'server' in args:
-        server=args.pop('server')
+           server=args.pop('server')
+       if 'port' in args:
+           port=args.pop('port')
 
-    server_api_url = get_api_url(server)
+    server_api_url = get_api_url(server, port)
     URL = url.format(server_api_url)
 
     if not user:

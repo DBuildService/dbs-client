@@ -11,7 +11,7 @@ Client for lightweight communication with DBS server.
 """
 
 def _get_copied(args):
-    s={'server':'server'}
+    s={'server':'server', 'port':'port'}
     s.update(args)
     return s
 
@@ -113,7 +113,7 @@ def main():
     # general args
     parser.add_argument('--server', metavar='url', default=BUILD_SERVER_URL_DEFAULT,
                    help='URL of the Build Server')
-    parser.add_argument('-p', '--port', metavar='port', default=BUILD_SERVER_PORT_DEFAULT, type=int,
+    parser.add_argument('-p', '--port', metavar='port', type=int,
                    help='Port number the Build Server runs on')
     parser.add_argument('-u', '--user', metavar='user',
                    help='Username, will be replaced by advanced authorization')

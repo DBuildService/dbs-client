@@ -21,6 +21,7 @@ Usage
         taskstatus          Show status of the task
         images              Show all images
         imageinfo           Show information about specified image
+        imagestatus         Show status information about specified image
         imagedeps           Show deps of specified image
         new                 Submit a new task
         move                Move some image from one registry to another registry
@@ -36,6 +37,22 @@ Usage
       -F FILE, --file FILE  JSON file with specification
 
     This is an open-source project by Red Hat.
+
+
+Example of usage
+================
+
+Submit a new task:
+
+    python dbs-client.py new -g https://github.com/username/projectname --git-dockerfile-path=path/Dockerfile
+
+Get info about a task:
+
+    python dbs-client.py taskstatus -t 123465
+
+Get info about all images:
+
+    python dbs-client.py images
 
 
 Configuration

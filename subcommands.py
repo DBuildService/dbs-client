@@ -121,7 +121,7 @@ def _default_post(url, data=None, args=None, user=None):
         # TODO: should not we use some wrapper around message like [retcode=1, message=...]?
         # then it would be:
         # print(output["message"])
-        print(output)
+        return output
 
 
 def _default_get(url, data=None, args=None, user=None):
@@ -155,7 +155,7 @@ def _default_get(url, data=None, args=None, user=None):
         # TODO: should not we use some wrapper around message like [retcode=1, message=...]?
         # then it would be:
         # print(output["message"])
-        print(output)
+        return output
 
 
 def action_new(data=None, args=None, user=None):

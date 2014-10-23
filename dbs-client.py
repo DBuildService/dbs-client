@@ -21,6 +21,10 @@ def _get_specified(args, fields):
     return dict((nameout, d[namein]) for nameout, namein in _get_copied(fields).iteritems() if d[namein] is not None)
 
 
+def _print_nice(s):
+    print(json.dumps(s, indent=4, sort_keys=True))
+
+
 # sub-command functions
 def action_new(args):
     if args.file:
@@ -32,7 +36,9 @@ def action_new(args):
                                     'target_registries':'target_registries',
                                     'repos':'repos',
                                     'tag':'tag'})
-    return subcommands.action_new(args=payload)
+    output = subcommands.action_new(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_move(args):
@@ -42,7 +48,9 @@ def action_move(args):
                                     'target_registry':'target_registry',
                                     'tags':'tags',
                                     'image':'image'})
-    return subcommands.action_move(args=payload)
+    output = subcommands.action_move(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_invalidate(args):
@@ -50,7 +58,9 @@ def action_invalidate(args):
         return subcommands.action_invalidate(data=args.file.read())
     payload = _get_specified(args, {'target_registries':'target_registries',
                                     'image':'image'})
-    return subcommands.action_invalidate(args=payload)
+    output = subcommands.action_invalidate(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_rebuild(args):
@@ -58,49 +68,63 @@ def action_rebuild(args):
         return subcommands.action_rebuild(data=args.file.read())
     payload = _get_specified(args, {'target_registries':'target_registries',
                                     'image':'image'})
-    return subcommands.action_rebuild(args=payload)
+    output = subcommands.action_rebuild(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_tasks(args):
     if args.file:
         return subcommands.action_tasks(data=args.file.read())
     payload = _get_specified(args, {})
-    return subcommands.action_tasks(args=payload)
+    output = subcommands.action_tasks(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_taskstatus(args):
     if args.file:
         return subcommands.action_taskstatus(data=args.file.read())
     payload = _get_specified(args, {'task':'task'})
-    return subcommands.action_taskstatus(args=payload)
+    output = subcommands.action_taskstatus(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_images(args):
     if args.file:
         return subcommands.action_images(data=args.file.read())
     payload = _get_specified(args, {})
-    return subcommands.action_images(args=payload)
+    output = subcommands.action_images(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_imageinfo(args):
     if args.file:
         return subcommands.action_imageinfo(data=args.file.read())
     payload = _get_specified(args, {'image':'image'})
-    return subcommands.action_imageinfo(args=payload)
+    output = subcommands.action_imageinfo(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_imagestatus(args):
     if args.file:
         return subcommands.action_imagestatus(data=args.file.read())
     payload = _get_specified(args, {'image':'image'})
-    return subcommands.action_imagestatus(args=payload)
+    output = subcommands.action_imagestatus(args=payload)
+    _print_nice(output)
+    return True
 
 
 def action_imagedeps(args):
     if args.file:
         return subcommands.action_imagedeps(data=args.file.read())
     payload = _get_specified(args, {'image':'image'})
-    return subcommands.action_imagedeps(args=payload)
+    output = subcommands.action_imagedeps(args=payload)
+    _print_nice(output)
+    return True
 
 
 def main():
@@ -205,6 +229,9 @@ def main():
     return args.func(args)
 
 if __name__ == '__main__':
-    exit(main())
+    if main():
+        exit(0)
+    else:
+        exit(1)
 
 

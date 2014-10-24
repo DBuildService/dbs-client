@@ -1,0 +1,4 @@
+rel-eng/releasers.conf
+dbs-client-*.tar.gz
+*.py[co]
+*.swp

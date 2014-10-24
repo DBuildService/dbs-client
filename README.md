@@ -81,6 +81,9 @@ On terminal-celery, run:
 On terminal-server, run:
 
     cd dbs-server
+    head -c 500 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1 >secret_key
+    rm -f data/db.sqlite3
+    ./manage.py syncdb --noinput
     ./manage.py runserver
 
 On terminal-client, run:

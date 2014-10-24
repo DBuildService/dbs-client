@@ -1,7 +1,9 @@
 Client Tool for Docker Build Service
 ====================================
 
-This Client provides library in subcommands.py and thin wrapper around this library, that basically only parses CLI arguments and constructs a JSON request from that.
+This Client provides library in subcommands.py and thin wrapper around this
+library, that basically only parses CLI arguments and constructs a JSON
+request from that.
 
 
 Usage
@@ -44,21 +46,48 @@ Example of usage
 
 Submit a new task:
 
-    python dbs-client.py new -g https://github.com/username/projectname --git-dockerfile-path=path/Dockerfile
+    python dbs-client.py -p 8000 new \
+                         -g https://github.com/TomasTomecek/docker-hello-world.git \
+                         --git-dockerfile-path=Dockerfile
 
 Get info about a task:
 
-    python dbs-client.py taskstatus -t 123465
+    python dbs-client.py -p 8000 taskstatus -t 123465
 
 Get info about all images:
 
     python dbs-client.py images
 
 
+How to test the whole DBS on one machine
+========================================
+
+We need three processes, so we will use three terminals.
+
+Install all dependencies as documented in README of particular components.
+
+On terminal-celery, run:
+
+    PYTHONPATH=../dock/ celery -A dbs_worker.docker_tasks worker -l INFO
+
+On terminal-server, run:
+
+    ./manage.py runserver
+
+On terminal-client, run:
+
+    python dbs-client.py -p 8000 new \
+                         -g https://github.com/TomasTomecek/docker-hello-world.git \
+                         --git-dockerfile-path=Dockerfile
+    python dbs-client.py -p 8000 tasks
+
+
 Configuration
 =============
 
-You can cange configuration of the client (like server URL) either by specifying CLI arguments or define them in file ~/.config/dbs, which can have the following format:
+You can cange configuration of the client (like server URL) either
+by specifying CLI arguments or define them in file ~/.config/dbs,
+which can have the following format:
 
     [client]
     server_url=http://localhost:8000

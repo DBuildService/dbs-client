@@ -76,7 +76,7 @@ def _get_data(req):
         output = json.loads(req.text)
     except ValueError:
         raise dbs_exceptions.DBSCliUnknownResponseException(
-                    "Unknown response from the server.")
+                    "Unknown response from the server. The response was: {0}".format(req.text))
     if req.status_code != 200:
         raise dbs_exceptions.DBSCliRequestException(output["error"])
 
@@ -189,7 +189,7 @@ def action_tasks(data=None, args=None, user=None):
 def action_taskstatus(data=None, args=None, user=None):
     """ Show tasks status. """
     task=args.pop('task')
-    return _default_get('{{0}}/taskstatus/{0}'.format(task), data, args, user)
+    return _default_get('{{0}}/task/{0}/status'.format(task), data, args, user)
 
 
 def action_images(data=None, args=None, user=None):

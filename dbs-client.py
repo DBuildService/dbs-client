@@ -180,7 +180,7 @@ def main():
     parser_new = subparsers.add_parser('new', help='Submit a new task')
     parser_new.add_argument('-g', '--git-url', metavar='url', required=True,
                        help='URL to git repository, excluding path')
-    parser_new.add_argument('--git-dockerfile-path', metavar='path', required=True,
+    parser_new.add_argument('--git-dockerfile-path', metavar='path', required=False,
                        help='Path in the git repository')
     parser_new.add_argument('--git-commit', metavar='path', default='HEAD',
                        help='Commit in the git repository')

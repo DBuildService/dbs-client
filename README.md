@@ -73,6 +73,8 @@ We need three processes, so we will use three terminals.
 
 Install all dependencies as documented in README of particular components.
 
+Prepare building docker image as described at https://github.com/DBuildService/dock.
+
 On terminal-celery, run:
 
     cd dbs-worker

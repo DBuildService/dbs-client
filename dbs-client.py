@@ -191,7 +191,7 @@ def main():
     parser_new.add_argument('-r', '--repos', metavar='url', nargs='*',
                        help='URL to Yum repository where to pull packages from '
                        + 'during build, but should not be available in the image')
-    parser_new.add_argument('-t', '--tag', metavar='tag',
+    parser_new.add_argument('-t', '--tag', metavar='tag', required=True,
                        help='Tag that should be used to label built image with')
     parser_new.set_defaults(func=action_new)
 

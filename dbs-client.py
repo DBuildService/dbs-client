@@ -144,13 +144,13 @@ def main():
     parser.add_argument('-F', '--file', type=argparse.FileType('r'),
                    help='JSON file with specification')
 
-    # create the parser for the "taskstatus" command
+    # create the parser for the "tasks" command
     parser_tasks = subparsers.add_parser('tasks', help='Show all tasks')
     parser_tasks.set_defaults(func=action_tasks)
 
     # create the parser for the "taskstatus" command
     parser_taskstatus = subparsers.add_parser('taskstatus', help='Show status of the task')
-    parser_taskstatus.add_argument('-t', '--task', metavar='id', required=True,
+    parser_taskstatus.add_argument('task', metavar='id',
                        help='ID of the task we want status for')
     parser_taskstatus.set_defaults(func=action_taskstatus)
 
@@ -160,19 +160,19 @@ def main():
 
     # create the parser for the "imageinfo" command
     parser_imageinfo = subparsers.add_parser('imageinfo', help='Show information about specified image')
-    parser_imageinfo.add_argument('-i', '--image', metavar='id', required=True,
+    parser_imageinfo.add_argument('image', metavar='id',
                        help='ID of the image we want information for')
     parser_imageinfo.set_defaults(func=action_imageinfo)
 
     # create the parser for the "imagestatus" command
     parser_imagestatus = subparsers.add_parser('imagestatus', help='Show status information about specified image')
-    parser_imagestatus.add_argument('-i', '--image', metavar='id', required=True,
+    parser_imagestatus.add_argument('image', metavar='id',
                        help='ID of the image we want information for')
     parser_imagestatus.set_defaults(func=action_imagestatus)
 
     # create the parser for the "imagedeps" command
     parser_imagedeps = subparsers.add_parser('imagedeps', help='Show deps of specified image')
-    parser_imagedeps.add_argument('-i', '--image', metavar='id', required=True,
+    parser_imagedeps.add_argument('image', metavar='id',
                        help='ID of the image we ask for dependencies')
     parser_imagedeps.set_defaults(func=action_imagedeps)
 

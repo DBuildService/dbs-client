@@ -1,0 +1,10 @@
+#!/usr/bin/python
+# EASY-INSTALL-ENTRY-SCRIPT: 'dbs-client==0.1','console_scripts','dbs-client'
+__requires__ = 'dbs-client==0.1'
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('dbs-client==0.1', 'console_scripts', 'dbs-client')()
+    )

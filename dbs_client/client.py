@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+
+from __future__ import absolute_import, division, generators, nested_scopes, print_function, unicode_literals, with_statement
+
 import argparse
 import json
 import requests
 
-import subcommands
-from dbs_defaults import *
+from . import subcommands
+from .defaults import *
 
 """
 Client for lightweight communication with DBS server.
@@ -227,11 +230,4 @@ def main():
     args = parser.parse_args()
 
     return args.func(args)
-
-if __name__ == '__main__':
-    if main():
-        exit(0)
-    else:
-        exit(1)
-
 

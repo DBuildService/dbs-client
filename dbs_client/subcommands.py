@@ -4,13 +4,15 @@
 Functions to call the DBS Restful API and handling the output.
 """
 
+from __future__ import absolute_import, division, generators, nested_scopes, print_function, unicode_literals, with_statement
+
 import ConfigParser
 import requests
 import json
 import os
 
-import dbs_exceptions
-from dbs_defaults import *
+from . import exceptions
+from .defaults import *
 
 
 
@@ -52,14 +54,14 @@ def get_user():
     config = ConfigParser.ConfigParser()
     if not config.read(
             os.path.join(os.path.expanduser("~"), ".config", CONFIG_FILE_NAME)):
-        raise dbs_exceptions.CoprCliNoConfException(
+        raise exceptions.CoprCliNoConfException(
             "No configuration file '~/.config/{0}' found. "
             "See man {0}-cli for more information".format(CONFIG_FILE_NAME))
     try:
         username = config.get("client", "username", None)
         token = config.get("client", "token", None)
     except ConfigParser.Error as err:
-        raise dbs_exceptions.CoprCliConfigException(
+        raise exceptions.CoprCliConfigException(
             "Bad configuration file: {0}".format(err))
     return {"username": username, "token": token}
 
@@ -71,17 +73,17 @@ def _get_data(req):
     Otherwise return json object.
     """
     if req.status_code == 404:
-        raise dbs_exceptions.DBSCliRequestException("We got 404...\n")
+        raise exceptions.DBSCliRequestException("We got 404...\n")
     try:
         output = json.loads(req.text)
     except ValueError:
-        raise dbs_exceptions.DBSCliUnknownResponseException(
+        raise exceptions.DBSCliUnknownResponseException(
                     "Unknown response from the server. The response was: {0}".format(req.text))
     if req.status_code != 200:
-        raise dbs_exceptions.DBSCliRequestException(output["error"])
+        raise exceptions.DBSCliRequestException(output["error"])
 
     if output is None:
-        raise dbs_exceptions.DBSCliUnknownResponseException(
+        raise exceptions.DBSCliUnknownResponseException(
                     "No response from the server.")
     return output
 
@@ -112,9 +114,9 @@ def _default_post(url, data=None, args=None, user=None):
         #TODO:                    auth=(user["username"], user["token"]),
                             data=data)
     except requests.exceptions.ConnectionError:
-        raise dbs_exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
+        raise exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
     #except:
-    #    raise dbs_exceptions.DBSCliRequestException("Error when sending POST request to {0}.".format(URL))
+    #    raise exceptions.DBSCliRequestException("Error when sending POST request to {0}.".format(URL))
 
     output = _get_data(req)
     if output is not None:
@@ -146,9 +148,9 @@ def _default_get(url, data=None, args=None, user=None):
         req = requests.get(URL)
     #TODO:                       ,auth=(user["username"], user["token"]))
     except requests.exceptions.ConnectionError:
-        raise dbs_exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
+        raise exceptions.DBSCliRequestException("Could not connect to server {0}.".format(URL))
     #except:
-    #    raise dbs_exceptions.DBSCliRequestException("Error when sending GET request to {0}.".format(URL))
+    #    raise exceptions.DBSCliRequestException("Error when sending GET request to {0}.".format(URL))
 
     output = _get_data(req)
     if output is not None:

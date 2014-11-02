@@ -9,11 +9,11 @@ request from that.
 Usage
 -----
 
-    usage: dbs-client.py [-h] [--version] [--server url] [-p port] [-u user]
-                         [-F FILE]
+    usage: dbs-client [-h] [--version] [--server url] [-p port] [-u user]
+                      [-F FILE]
 
-                         {tasks,taskstatus,images,imageinfo,imagedeps,new,move,rebuild,invalidate}
-                         ...
+                      {tasks,taskstatus,images,imageinfo,imagedeps,new,move,rebuild,invalidate}
+                      ...
 
     Client for lightweight communication with DBS server.
 
@@ -46,17 +46,18 @@ Example of usage
 
 Submit a new task:
 
-    python dbs-client.py -p 8000 new \
-                         -g https://github.com/TomasTomecek/docker-hello-world.git \
-                         --git-dockerfile-path=Dockerfile
+    dbs-client -p 8000 new \
+               -t tag \
+               -g https://github.com/TomasTomecek/docker-hello-world.git \
+               --git-dockerfile-path=Dockerfile
 
 Get info about a task:
 
-    python dbs-client.py -p 8000 taskstatus -t 123465
+    dbs-client -p 8000 taskstatus -t 123465
 
 Get info about all images:
 
-    python dbs-client.py images
+    dbs-client -p 8000 images
 
 
 How to test the whole DBS on one machine
@@ -91,10 +92,11 @@ On terminal-server, run:
 On terminal-client, run:
 
     cd dbs-client
-    python dbs-client.py -p 8000 new \
-                         -g https://github.com/TomasTomecek/docker-hello-world.git \
-                         --git-dockerfile-path=Dockerfile
-    python dbs-client.py -p 8000 tasks
+    ./dbs-client -p 8000 new \
+                 -t tag \
+                 -g https://github.com/TomasTomecek/docker-hello-world.git \
+                 --git-dockerfile-path=Dockerfile
+    ./dbs-client -p 8000 tasks
 
 
 Configuration

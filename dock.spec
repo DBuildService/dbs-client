@@ -40,6 +40,9 @@ Client tool / library for DBuildService
 
 
 %changelog
+* Mon Nov 03 2014 Jakub Dorňák <jdornak@redhat.com> 0.1-1
+- new package built with tito
+
 * Sun Nov  2 2014 Jakub Dorňák <jdornak@redhat.com> - 0.1-1
 - Initial package
 

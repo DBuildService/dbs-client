@@ -180,7 +180,7 @@ def action_rebuild(data=None, args=None, user=None):
 def action_invalidate(data=None, args=None, user=None):
     """ Invalidate all deps of image specified by ID. Specify either data or args. """
     image=args.pop('image')
-    return _default_post('{{0}}/image/invalidatechilds/{0}'.format(image), data, args, user)
+    return _default_post('{{0}}/image/invalidate/{0}'.format(image), data, args, user)
 
 
 def action_tasks(data=None, args=None, user=None):

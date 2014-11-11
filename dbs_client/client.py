@@ -59,8 +59,7 @@ def action_move(args):
 def action_invalidate(args):
     if args.file:
         return subcommands.action_invalidate(data=args.file.read())
-    payload = _get_specified(args, {'target_registries':'target_registries',
-                                    'image':'image'})
+    payload = _get_specified(args, {'image':'image'})
     output = subcommands.action_invalidate(args=payload)
     _print_nice(output)
     return True
@@ -220,8 +219,6 @@ def main():
 
     # create the parser for the "invalidate" command
     parser_inv = subparsers.add_parser('invalidate', help='Invalidate all images built from specified image')
-    parser_inv.add_argument('-e', '--target-registries', metavar='url', nargs='*',
-                       help='URL to registry server where we want to invalidate childs')
     parser_inv.add_argument('-i', '--image', metavar='id', required=True,
                        help='ID of the image whose childs should be invalidated')
     parser_inv.set_defaults(func=action_invalidate)

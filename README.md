@@ -66,7 +66,7 @@ How to test the whole DBS on one machine
 Get sources of all components:
 
     mkdir dbs ; cd dbs
-    for c in dock dbs-client dbs-worker dbs-server ; do
+    for c in dock dbs-client dbs-server ; do
         git clone https://github.com/DBuildService/$c.git
     done
 
@@ -76,10 +76,14 @@ Install all dependencies as documented in README of particular components.
 
 Prepare building docker image as described at https://github.com/DBuildService/dock.
 
+Install and run a local Docker registry for storing the built images:
+
+    docker run -d -p 5000:5000 registry
+
 On terminal-celery, run:
 
-    cd dbs-worker
-    PYTHONPATH=../dock/ celery -A dbs_worker.docker_tasks worker -l INFO
+    cd dbs-server
+    ./manage.py celery worker -l INFO
 
 On terminal-server, run:
 
